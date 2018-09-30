@@ -36,6 +36,18 @@ android {
             signingConfig signingConfigs.config
         }
     }
+    flavorDimensions "version"
+    productFlavors {
+        dev {
+            dimension "version"
+            versionNameSuffix "-dev"
+            signingConfig signingConfigs.config
+        }
+        prod {
+            dimension "version"
+            signingConfig signingConfigs.config
+        }
+    }
 }
 
 dependencies {
