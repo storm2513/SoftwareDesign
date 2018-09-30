@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">SoftwareDesign</string>
+    <string name="number">Number</string>
+    <string name="version">Version:</string>
+    <string name="imei">There can be your IMEI!</string>
+    <string name="phone_calls_permission_explanation">We need Phone calls permission to get the IMEI</string>
+    <string name="ok">OK</string>
+    <string name="dont_have_imei_permission">Don\'t have a permission for getting IMEI</string>
+    <string name="grant_permission">Grant permission</string>
 </resources>
