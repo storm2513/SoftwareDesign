@@ -18,12 +18,49 @@ android {
         }
     }
     compileSdkVersion 27
+    def getVersionName = { ->
+        def major = "0"
+        def date = new ByteArrayOutputStream()
+        def patch = new ByteArrayOutputStream()
+        def minor = new ByteArrayOutputStream()
+
+        exec {
+            commandLine 'git', 'rev-list', '--count', 'master'
+            standardOutput = minor
+        }
+        minor = (Integer.valueOf(minor.toString().trim()) - 1).toString()
+
+        exec {
+            commandLine 'git', 'log', '--pretty=format:\"%cd\"', '-n', '1', 'master'
+            standardOutput = date
+        }
+        exec {
+            commandLine 'git', 'rev-list', '--count', 'develop', '--since', date.toString().trim()
+            standardOutput = patch
+        }
+        patch = (Integer.valueOf(patch.toString().trim()) - 1).toString()
+
+        return "${major}.${minor}.${patch}"
+    }
+    def getVersionCode = { ->
+        def code = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'rev-list', '--all', '--count'
+            standardOutput = code
+        }
+        return Integer.valueOf(code.toString().trim())
+    }
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "SoftwareDesign-${variant.versionName}.apk"
+        }
+    }
     defaultConfig {
         applicationId "com.bsuirlabs.softwaredesign"
         minSdkVersion 23
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode getVersionCode()
+        versionName getVersionName()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
