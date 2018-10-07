@@ -19,28 +19,15 @@ android {
     }
     compileSdkVersion 27
     def getVersionName = { ->
-        def major = "0"
-        def date = new ByteArrayOutputStream()
-        def patch = new ByteArrayOutputStream()
-        def minor = new ByteArrayOutputStream()
+        def version = new ByteArrayOutputStream()
 
         exec {
-            commandLine 'git', 'rev-list', '--count', 'master'
-            standardOutput = minor
+            commandLine 'git', 'describe'
+            standardOutput = version
         }
-        minor = (Integer.valueOf(minor.toString().trim()) - 1).toString()
+        version = version.toString().split('-')
 
-        exec {
-            commandLine 'git', 'log', '--pretty=format:\"%cd\"', '-n', '1', 'master'
-            standardOutput = date
-        }
-        exec {
-            commandLine 'git', 'rev-list', '--count', 'develop', '--since', date.toString().trim()
-            standardOutput = patch
-        }
-        patch = (Integer.valueOf(patch.toString().trim()) - 1).toString()
-
-        return "${major}.${minor}.${patch}"
+        return "${version[0]}.${version[1]}"
     }
     def getVersionCode = { ->
         def code = new ByteArrayOutputStream()

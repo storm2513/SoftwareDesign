@@ -5,22 +5,23 @@ import android.Manifest.permission.READ_PHONE_STATE
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.content.pm.PackageManager.*
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityCompat.checkSelfPermission
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.telephony.TelephonyManager
-import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 private const val PermissionsRequestReadPhoneState = 0
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        requestedOrientation = resources.getInteger(R.integer.screen_orientation)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         if (checkSelfPermission(this@MainActivity,
@@ -33,8 +34,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setProjectVersion(){
-        val version = findViewById<TextView>(R.id.projectVersion)
-        version.text = BuildConfig.VERSION_NAME
+        projectVersion.text = BuildConfig.VERSION_NAME
     }
 
     private fun requestReadPhoneStatePermission(){
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showSnackbar(){
-        val snackbar = Snackbar.make(findViewById(R.id.imei),
+        val snackbar = Snackbar.make(imei,
                 resources.getString(R.string.dont_have_imei_permission), Snackbar.LENGTH_INDEFINITE)
         snackbar.setAction(resources.getString(R.string.grant_permission)) {
             snackbar.dismiss()
@@ -85,14 +85,13 @@ class MainActivity : AppCompatActivity() {
     private fun setImei() {
         if (checkSelfPermission(this@MainActivity,
                         READ_PHONE_STATE) == PERMISSION_GRANTED) {
-            val imeiTextView = findViewById<TextView>(R.id.imei)
             val tel = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            imeiTextView.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    tel.imei
-                                } else {
-                                    @Suppress("DEPRECATION")
-                                    tel.deviceId
-                                }
+            imei.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            tel.imei
+                        } else {
+                            @Suppress("DEPRECATION")
+                            tel.deviceId
+                        }
         }
     }
 }

@@ -1,0 +1,3 @@
+<resources>
+    <integer name="screen_orientation">-1</integer> <!-- Default screen orientation -->
+</resources>
