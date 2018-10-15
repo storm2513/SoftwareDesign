@@ -39,7 +39,7 @@ android {
     }
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "SoftwareDesign-${variant.versionName}.apk"
+            outputFileName = applicationId + "-${variant.versionName}.apk"
         }
     }
     defaultConfig {
