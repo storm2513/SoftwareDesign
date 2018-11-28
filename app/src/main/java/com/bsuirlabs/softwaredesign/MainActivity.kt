@@ -18,19 +18,33 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 private const val PermissionsRequestReadPhoneState = 0
+private const val IMEI = "IMEI"
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        requestedOrientation = resources.getInteger(R.integer.screen_orientation)
         super.onCreate(savedInstanceState)
+        requestedOrientation = resources.getInteger(R.integer.screen_orientation)
         setContentView(R.layout.activity_main)
-        if (checkSelfPermission(this@MainActivity,
-                        READ_PHONE_STATE) != PERMISSION_GRANTED) {
-            showPermissionExplanationDialog();
+        val imeiNumber = savedInstanceState?.getString(IMEI)
+        if (imeiNumber == null) {
+            if (checkSelfPermission(this@MainActivity,
+                            READ_PHONE_STATE) != PERMISSION_GRANTED) {
+                showPermissionExplanationDialog()
+            } else {
+                setImei()
+            }
         } else {
-            setImei()
+            imei.text = imeiNumber
         }
         setProjectVersion()
+    }
+
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        if (checkSelfPermission(this@MainActivity,
+                        READ_PHONE_STATE) == PERMISSION_GRANTED) {
+            savedInstanceState.putString(IMEI, imei.text.toString())
+        }
+        super.onSaveInstanceState(savedInstanceState)
     }
 
     private fun setProjectVersion(){
