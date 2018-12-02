@@ -1,111 +1,80 @@
 package com.bsuirlabs.softwaredesign
 
-import android.Manifest
-import android.Manifest.permission.READ_PHONE_STATE
-import android.annotation.SuppressLint
-import android.content.Context
-import android.content.pm.PackageManager
-import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.os.Build
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityCompat.checkSelfPermission
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.navigation.NavigationView
+import androidx.core.view.GravityCompat
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import android.telephony.TelephonyManager
+import android.view.Menu
+import android.view.MenuItem
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, ProfileFragment.OnFragmentInteractionListener {
+    override fun onFragmentInteraction(uri: Uri) {}
 
-private const val PermissionsRequestReadPhoneState = 0
-private const val IMEI = "IMEI"
+    private lateinit var navController: NavController
 
-class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestedOrientation = resources.getInteger(R.integer.screen_orientation)
         setContentView(R.layout.activity_main)
-        val imeiNumber = savedInstanceState?.getString(IMEI)
-        if (imeiNumber == null) {
-            if (checkSelfPermission(this@MainActivity,
-                            READ_PHONE_STATE) != PERMISSION_GRANTED) {
-                showPermissionExplanationDialog()
-            } else {
-                setImei()
-            }
+        requestedOrientation = resources.getInteger(R.integer.screen_orientation)
+
+        setSupportActionBar(toolbar)
+        navController = findNavController(R.id.nav_host_fragment)
+
+        val toggle = ActionBarDrawerToggle(
+                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer_layout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        nav_view.setNavigationItemSelectedListener(this)
+        nav_view.setCheckedItem(R.id.nav_home)
+
+    }
+
+    override fun onBackPressed() {
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
         } else {
-            imei.text = imeiNumber
+            super.onBackPressed()
         }
-        setProjectVersion()
     }
 
-    override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        if (checkSelfPermission(this@MainActivity,
-                        READ_PHONE_STATE) == PERMISSION_GRANTED) {
-            savedInstanceState.putString(IMEI, imei.text.toString())
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        when (item.itemId) {
+            R.id.action_about -> {
+                startActivity(Intent(this, AboutActivity::class.java))
+                return true
+            } else -> return super.onOptionsItemSelected(item)
         }
-        super.onSaveInstanceState(savedInstanceState)
     }
 
-    private fun setProjectVersion(){
-        projectVersion.text = BuildConfig.VERSION_NAME
-    }
-
-    private fun requestReadPhoneStatePermission(){
-        ActivityCompat.requestPermissions(this@MainActivity,
-                arrayOf(Manifest.permission.READ_PHONE_STATE),
-                PermissionsRequestReadPhoneState)
-    }
-
-    private fun showPermissionExplanationDialog(){
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage(resources.getString(R.string.phone_calls_permission_explanation))
-                .setCancelable(false)
-                .setPositiveButton(resources.getString(R.string.ok)) { _, _ ->
-                    requestReadPhoneStatePermission()
-                }
-        val alert = builder.create()
-        alert.show()
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            PermissionsRequestReadPhoneState -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    setImei()
-                } else {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity,
-                                    Manifest.permission.READ_PHONE_STATE)) {
-                        showSnackbar()
-                    }
-                }
-                return
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // Handle navigation view item clicks here.
+        when (item.itemId) {
+            R.id.nav_home -> {
+                navController.navigate(R.id.mainFragment)
+            }
+            R.id.nav_profile -> {
+                navController.navigate(R.id.profileFragment)
             }
         }
-    }
 
-    private fun showSnackbar(){
-        val snackbar = Snackbar.make(imei,
-                resources.getString(R.string.dont_have_imei_permission), Snackbar.LENGTH_INDEFINITE)
-        snackbar.setAction(resources.getString(R.string.grant_permission)) {
-            snackbar.dismiss()
-            requestReadPhoneStatePermission()
-        }
-        snackbar.show()
-    }
-
-    @SuppressLint("HardwareIds")
-    private fun setImei() {
-        if (checkSelfPermission(this@MainActivity,
-                        READ_PHONE_STATE) == PERMISSION_GRANTED) {
-            val tel = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            imei.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            tel.imei
-                        } else {
-                            @Suppress("DEPRECATION")
-                            tel.deviceId
-                        }
-        }
+        drawer_layout.closeDrawer(GravityCompat.START)
+        return true
     }
 }

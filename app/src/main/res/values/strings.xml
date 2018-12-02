@@ -7,4 +7,15 @@
     <string name="ok">OK</string>
     <string name="dont_have_imei_permission">Don\'t have a permission for getting IMEI</string>
     <string name="grant_permission">Grant permission</string>
+
+    <string name="profile">Profile</string>
+    <string name="welcome_text">Hello, User! :)</string>
+    <string name="title_activity_about">About</string>
+    <string name="action_about">About</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>
