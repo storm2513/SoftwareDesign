@@ -17,5 +17,28 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Software Design</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="create_new_account">Create new account</string>
+    <string name="profile_image">Profile image</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="logout">Logout</string>
+    <string name="change_photo">Change photo</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="phone">Phone</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="password_confirmation">Password confirmation</string>
+    <string name="register">Register</string>
+    <string name="sign_in_to_your_account">Sign in to your account</string>
+    <string name="home">Home</string>
+    <string name="email_password_blank">Email and password should not be blank</string>
+    <string name="select_photo_from_gallery">Select photo from gallery</string>
+    <string name="capture_photo">Capture photo from camera</string>
+    <string name="registration_error">Email should not be blank and passwords must be equal</string>
 </resources>

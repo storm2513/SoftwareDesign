@@ -11,10 +11,14 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener, ProfileFragment.OnFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+        MainFragment.OnFragmentInteractionListener, ProfileFragment.OnFragmentInteractionListener,
+        ProfileEditFragment.OnFragmentInteractionListener, LoginFragment.OnFragmentInteractionListener,
+        RegistrationFragment.OnFragmentInteractionListener {
     override fun onFragmentInteraction(uri: Uri) {}
 
     private lateinit var navController: NavController
@@ -46,31 +50,30 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
+        menuInflater.inflate(R.menu.menu_about, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.action_about -> {
                 startActivity(Intent(this, AboutActivity::class.java))
-                return true
-            } else -> return super.onOptionsItemSelected(item)
+                true
+            } else -> super.onOptionsItemSelected(item)
         }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_home -> {
                 navController.navigate(R.id.mainFragment)
             }
             R.id.nav_profile -> {
-                navController.navigate(R.id.profileFragment)
+                if (FirebaseAuth.getInstance().currentUser != null) {
+                    navController.navigate(R.id.profileFragment)
+                } else {
+                    navController.navigate(R.id.loginFragment)
+                }
             }
         }
 

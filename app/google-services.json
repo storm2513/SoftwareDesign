@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "381912392675",
+    "firebase_url": "https://softwaredesign-5b05d.firebaseio.com",
+    "project_id": "softwaredesign-5b05d",
+    "storage_bucket": "softwaredesign-5b05d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:381912392675:android:d01d88cdc87cb6cf",
+        "android_client_info": {
+          "package_name": "com.bsuirlabs.softwaredesign"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "381912392675-l94r80e8gmre496f0rhmjlutplvptvtr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bsuirlabs.softwaredesign",
+            "certificate_hash": "e4614ec7f4c6d0d1aacd11c957548765d09bdd82"
+          }
+        },
+        {
+          "client_id": "381912392675-tilgrf76mivdnpmaklvci4d2nrsmack2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCskcdoePjDZ5EcJHXDG36hUDlW6WMqmgc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "381912392675-tilgrf76mivdnpmaklvci4d2nrsmack2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
