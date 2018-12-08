@@ -2,6 +2,7 @@ package com.bsuirlabs.softwaredesign
 
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -72,7 +73,7 @@ class ProfileFragment : Fragment() {
         }
         logoutButton.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
-            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+            (activity as MainActivity).startAuthActivity()
         }
     }
 

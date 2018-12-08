@@ -35,7 +35,7 @@ class LoginFragment : Fragment() {
                         .addOnCompleteListener {
                             enableButtons()
                             if (it.isSuccessful){
-                                findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
+                                (activity as AuthActivity).startMainActivity()
                             } else {
                                 Toast.makeText(context, it.exception.toString(), Toast.LENGTH_SHORT).show()
                             }

@@ -23,7 +23,7 @@ class RegistrationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         loginButton.setOnClickListener {
-            findNavController().navigate(R.id.action_registrationFragment_to_loginFragment)
+            findNavController().popBackStack()
         }
         registerButton.setOnClickListener {
             disableButtons()
@@ -36,7 +36,7 @@ class RegistrationFragment : Fragment() {
                         .addOnCompleteListener {
                             enableButtons()
                             if (it.isSuccessful){
-                                findNavController().navigate(R.id.action_registrationFragment_to_profileEditFragment)
+                                (activity as AuthActivity).startMainActivity()
                             } else {
                                 Toast.makeText(context, it.exception.toString(), Toast.LENGTH_SHORT).show()
                             }

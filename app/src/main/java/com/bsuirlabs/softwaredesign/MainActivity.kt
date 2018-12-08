@@ -80,4 +80,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+
+    fun startAuthActivity() {
+        startActivity(Intent(this, AuthActivity::class.java))
+        finish()
+    }
 }

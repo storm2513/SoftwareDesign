@@ -92,7 +92,7 @@ class ProfileEditFragment : Fragment() {
         }
 
         cancelButton.setOnClickListener {
-            findNavController().navigate(R.id.action_profileEditFragment_to_profileFragment)
+            findNavController().popBackStack()
         }
         saveButton.setOnClickListener {
             hideInputs()
@@ -137,7 +137,7 @@ class ProfileEditFragment : Fragment() {
         if (user != null) {
             databaseReference.child(user.uid).setValue(userProfile).addOnCompleteListener {
                 if (it.isSuccessful)
-                    findNavController().navigate(R.id.action_profileEditFragment_to_profileFragment)
+                    findNavController().popBackStack()
                 else
                     showInputs()
             }
