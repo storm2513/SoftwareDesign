@@ -3,14 +3,11 @@ package com.bsuirlabs.softwaredesign
 import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
-import android.opengl.Visibility
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -19,7 +16,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.findNavController
@@ -32,7 +28,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.fragment_profile_edit.*
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.util.*
 
 
