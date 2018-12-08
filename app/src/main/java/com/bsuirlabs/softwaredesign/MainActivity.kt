@@ -32,11 +32,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var navController: NavController
 
+    private val MainFragmentPageNumber = "1"
+    private val ProfileFragmentPageNumber = "2"
+    private val RssFragmentPageNumber = "3"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val currentUser = FirebaseAuth.getInstance().currentUser
-        if (currentUser == null)
+        if (currentUser == null) {
             startAuthActivity()
+            return
+        }
 
         setContentView(R.layout.activity_main)
         requestedOrientation = resources.getInteger(R.integer.screen_orientation)
@@ -74,6 +80,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
         FirebaseDatabase.getInstance().reference.child(currentUser.uid).addValueEventListener(userProfileListener)
+
+        openFragmentFromIntentPath()
     }
 
     override fun onBackPressed() {
@@ -104,11 +112,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 navController.navigate(R.id.mainFragment)
             }
             R.id.nav_profile -> {
-                if (FirebaseAuth.getInstance().currentUser != null) {
-                    navController.navigate(R.id.profileFragment)
-                } else {
-                    navController.navigate(R.id.loginFragment)
-                }
+                navController.navigate(R.id.profileFragment)
+            }
+            R.id.nav_rss -> {
+                navController.navigate(R.id.rssFragment)
             }
         }
 
@@ -135,5 +142,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     fun getProfileImageViewFromNavView() : ImageView {
         val headerView = nav_view.getHeaderView(0)
         return headerView.findViewById(R.id.nav_header_profile_icon) as ImageView
+    }
+
+    private fun openFragmentFromIntentPath() {
+        if (intent.data != null) {
+            val number = intent.data.toString().split("/").last()
+            when (number) {
+                MainFragmentPageNumber -> {
+                    navController.navigate(R.id.mainFragment)
+                }
+                ProfileFragmentPageNumber -> {
+                    navController.navigate(R.id.profileFragment)
+                }
+                RssFragmentPageNumber -> {
+                    navController.navigate(R.id.rssFragment)
+                }
+            }
+        }
     }
 }

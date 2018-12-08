@@ -25,4 +25,9 @@
         android:name="com.bsuirlabs.softwaredesign.ProfileEditFragment"
         android:label="fragment_profile_edit"
         tools:layout="@layout/fragment_profile_edit" ></fragment>
+    <fragment
+        android:id="@+id/rssFragment"
+        android:name="com.bsuirlabs.softwaredesign.RssFragment"
+        android:label="fragment_rss"
+        tools:layout="@layout/fragment_rss" />
 </navigation>
