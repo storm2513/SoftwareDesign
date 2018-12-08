@@ -59,14 +59,13 @@ class ProfileEditFragment : Fragment() {
                         profileLastName?.editText?.setText(userProfile!!.lastName)
                         profilePhone?.editText?.setText(userProfile!!.phone)
                         if (!userProfile!!.image.isNullOrBlank()) {
-                            var tempFile = File.createTempFile("img", "png");
-                            FirebaseStorage.getInstance()
+                            val imageReference = FirebaseStorage.getInstance()
                                     .getReference(userProfile!!.image!!)
-                                    .getFile(tempFile)
-                                    .addOnSuccessListener {
-                                        var bitmap = BitmapFactory.decodeFile(tempFile.absolutePath)
-                                        profileImage?.setImageBitmap(bitmap)
-                                    }
+                            if (profileImage != null) {
+                                GlideApp.with(this@ProfileEditFragment)
+                                        .load(imageReference)
+                                        .into(profileImage)
+                            }
                         }
                     }
                     showInputs()

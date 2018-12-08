@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -47,14 +48,13 @@ class ProfileFragment : Fragment() {
                         profileLastName?.text = userProfile.lastName
                         profilePhone?.text = userProfile.phone
                         if (!userProfile.image.isNullOrBlank()) {
-                            var tempFile = File.createTempFile("img", "png");
-                            FirebaseStorage.getInstance()
+                            val imageReference = FirebaseStorage.getInstance()
                                     .getReference(userProfile.image!!)
-                                    .getFile(tempFile)
-                                    .addOnSuccessListener {
-                                        var bitmap = BitmapFactory.decodeFile(tempFile.absolutePath)
-                                        profileImage?.setImageBitmap(bitmap)
-                                    }
+                            if (profileImage != null) {
+                                GlideApp.with(this@ProfileFragment)
+                                        .load(imageReference)
+                                        .into(profileImage)
+                            }
                         }
                     }
                     progressBar?.visibility = View.INVISIBLE
