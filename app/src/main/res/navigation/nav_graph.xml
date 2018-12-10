@@ -29,5 +29,26 @@
         android:id="@+id/rssFragment"
         android:name="com.bsuirlabs.softwaredesign.RssFragment"
         android:label="fragment_rss"
-        tools:layout="@layout/fragment_rss" />
+        tools:layout="@layout/fragment_rss" >
+        <action
+            android:id="@+id/action_rssFragment_to_rssWebviewFragment"
+            app:destination="@id/rssWebviewFragment" />
+        <action
+            android:id="@+id/action_rssFragment_to_changeRssSourceFragment"
+            app:destination="@id/changeRssSourceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/rssWebviewFragment"
+        android:name="com.bsuirlabs.softwaredesign.RssWebviewFragment"
+        android:label="fragment_rss_webview"
+        tools:layout="@layout/fragment_rss_webview" >
+        <argument
+            android:name="link"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/changeRssSourceFragment"
+        android:name="com.bsuirlabs.softwaredesign.ChangeRssSourceFragment"
+        android:label="fragment_change_rss_source"
+        tools:layout="@layout/fragment_change_rss_source" />
 </navigation>

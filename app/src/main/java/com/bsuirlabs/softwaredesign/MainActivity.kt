@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
         nav_view.setCheckedItem(R.id.nav_home)
-        setProfileEmail(currentUser!!.email!!)
+        setProfileEmail(currentUser.email!!)
 
         val userProfileListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_about, menu)
+        menuInflater.inflate(R.menu.menu_all, menu)
         return true
     }
 
@@ -102,7 +102,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.action_about -> {
                 startActivity(Intent(this, AboutActivity::class.java))
                 true
-            } else -> super.onOptionsItemSelected(item)
+            }
+            R.id.action_change_rss -> {
+                navController.navigate(R.id.action_rssFragment_to_changeRssSourceFragment)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

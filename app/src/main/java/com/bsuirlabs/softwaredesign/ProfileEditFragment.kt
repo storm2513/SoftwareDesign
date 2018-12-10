@@ -91,9 +91,9 @@ class ProfileEditFragment : Fragment() {
         }
         saveButton.setOnClickListener {
             hideInputs()
-            var firstName = profileFirstName.editText?.text.toString().trim()
-            var lastName = profileLastName.editText?.text.toString().trim()
-            var phone = profilePhone.editText?.text.toString().trim()
+            val firstName = profileFirstName.editText?.text.toString().trim()
+            val lastName = profileLastName.editText?.text.toString().trim()
+            val phone = profilePhone.editText?.text.toString().trim()
             if (userProfile == null) {
                 userProfile = UserProfile(firstName = firstName, lastName = lastName, phone = phone)
             } else {
@@ -128,7 +128,7 @@ class ProfileEditFragment : Fragment() {
     }
 
     private fun updateProfile(user : FirebaseUser?, userProfile : UserProfile?) {
-        var databaseReference = FirebaseDatabase.getInstance().reference
+        val databaseReference = FirebaseDatabase.getInstance().reference
         if (user != null) {
             databaseReference.child(user.uid).setValue(userProfile).addOnCompleteListener {
                 if (it.isSuccessful)
