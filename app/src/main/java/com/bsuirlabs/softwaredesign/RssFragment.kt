@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -45,7 +46,8 @@ class RssFragment : Fragment() {
             findNavController().navigate(direction)
         }
 
-        recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        val spanCount = if (resources.getBoolean(R.bool.isTablet)) 2 else 1
+        recyclerView.layoutManager = GridLayoutManager(context, spanCount)
         val currentUser = FirebaseAuth.getInstance().currentUser
         val userProfileListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
