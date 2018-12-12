@@ -12,6 +12,7 @@ import com.prof.rssparser.Article
 import android.text.Spanned
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 
 class ArticleAdapter(private val articleList: ArrayList<Article>, private val listener: (String) -> Unit) : RecyclerView.Adapter<ArticleAdapter.ViewHolder>() {
@@ -19,7 +20,10 @@ class ArticleAdapter(private val articleList: ArrayList<Article>, private val li
         holder.title.text = articleList[position].title
         holder.description.text = fromHtml(articleList[position].description)
         holder.date.text = articleList[position].pubDate.toString()
-        Glide.with(holder.image.context).load(articleList[position].image).into(holder.image)
+        GlideApp.with(holder.image.context)
+                .load(articleList[position].image)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.image)
     }
 
     override fun getItemCount(): Int {

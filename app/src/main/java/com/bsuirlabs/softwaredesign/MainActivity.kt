@@ -1,6 +1,7 @@
 package com.bsuirlabs.softwaredesign
 
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -164,5 +165,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         }
+    }
+
+    fun cleanArticlesCache () {
+        getSharedPreferences("data", Context.MODE_PRIVATE)
+                .edit()
+                .putString("articles", "")
+                .apply()
     }
 }

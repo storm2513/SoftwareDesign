@@ -63,6 +63,7 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_profileFragment_to_profileEditFragment)
         }
         logoutButton.setOnClickListener {
+            (activity as MainActivity).cleanArticlesCache()
             FirebaseAuth.getInstance().signOut()
             (activity as MainActivity).startAuthActivity()
         }
