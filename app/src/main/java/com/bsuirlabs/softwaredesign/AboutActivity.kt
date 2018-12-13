@@ -23,6 +23,7 @@ class AboutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         requestedOrientation = resources.getInteger(R.integer.screen_orientation)
         setContentView(R.layout.activity_about)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val imeiNumber = savedInstanceState?.getString(IMEI)
 
         if (imeiNumber == null) {
@@ -36,6 +37,11 @@ class AboutActivity : AppCompatActivity() {
             imei.text = imeiNumber
         }
         setProjectVersion()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return true
     }
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {

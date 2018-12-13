@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.prof.rssparser.Article
 import android.text.Spanned
 import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 
