@@ -14,6 +14,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.firebase.auth.FirebaseAuth
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
         nav_view.setCheckedItem(R.id.nav_home)
-        setProfileEmail(currentUser.email!!)
+        setProfileEmail(currentUser.email.toString())
 
         val userProfileListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -66,18 +67,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (userProfile != null) {
                     val fullName = """${userProfile.firstName} ${userProfile.lastName}"""
                     getNameTextViewFromNavView().text = fullName
-                    if (!userProfile.image.isNullOrBlank()) {
+                    if (!userProfile.image.isBlank()) {
                         val imageReference = FirebaseStorage.getInstance()
-                                .getReference(userProfile.image!!)
-                        GlideApp.with(this@MainActivity)
+                                .getReference(userProfile.image)
+                        GlideApp.with(applicationContext)
                                 .load(imageReference)
                                 .into(getProfileImageViewFromNavView())
                     }
                 }
-
             }
             override fun onCancelled(databaseError: DatabaseError) {
-                Log.w(ContentValues.TAG, "loadPost:onCancelled", databaseError.toException())
+                Log.e(ContentValues.TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
         FirebaseDatabase.getInstance().reference.child(currentUser.uid).addValueEventListener(userProfileListener)
@@ -99,6 +99,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+                ?.childFragmentManager?.fragments?.get(0)
+        if (currentFragment != null
+                && navController.currentDestination?.id == R.id.profileEditFragment
+                && (currentFragment as ProfileEditFragment).dataChanged) {
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage(getString(R.string.unsaved_data_message))
+                    .setPositiveButton(resources.getString(R.string.ok)) { _, _ ->
+                        startActivity(Intent(this, AboutActivity::class.java))
+                    }.setNegativeButton(resources.getString(R.string.cancel)) { _, _ -> }
+            builder.show()
+            return false
+        }
         return when (item.itemId) {
             R.id.action_about -> {
                 startActivity(Intent(this, AboutActivity::class.java))
@@ -151,8 +164,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun openFragmentFromIntentPath() {
-        if (intent.data != null) {
-            val number = intent.data.toString().split("/").last()
+        if (intent?.data != null) {
+            val number = intent?.data.toString().split("/").last()
             when (number) {
                 MainFragmentPageNumber -> {
                     navController.navigate(R.id.mainFragment)

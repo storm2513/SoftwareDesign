@@ -16,7 +16,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:text="Change RSS source"
+            android:text="@string/change_rss_source"
             android:textColor="@android:color/black"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -38,7 +38,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="RSS url" />
+                android:hint="@string/rss_url"
+                android:singleLine="true" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -50,7 +51,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:background="#28a745"
-            android:text="Save"
+            android:text="@string/save"
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

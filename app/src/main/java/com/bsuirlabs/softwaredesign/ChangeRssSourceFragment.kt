@@ -28,6 +28,11 @@ class ChangeRssSourceFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_change_rss_source, container, false)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("rss", rssSourceTextView?.editText?.text.toString().trim())
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val currentUser = FirebaseAuth.getInstance().currentUser
@@ -35,18 +40,21 @@ class ChangeRssSourceFragment : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 userProfile = dataSnapshot.getValue(UserProfile::class.java)
                 if (userProfile != null) {
-                    if (!userProfile!!.rssSource.isNullOrBlank()) {
-                        rssSourceTextView?.editText?.setText(userProfile!!.rssSource)
+                    if (!userProfile?.rssSource.isNullOrBlank()) {
+                        rssSourceTextView?.editText?.setText(userProfile?.rssSource)
                     }
+                }
+                if (savedInstanceState != null) {
+                    rssSourceTextView?.editText?.setText(savedInstanceState.getString("rss"))
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {
-                Log.w(ContentValues.TAG, "loadPost:onCancelled", databaseError.toException())
+                Log.e(ContentValues.TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
         saveButton.setOnClickListener {
             saveButton.isEnabled = false
-            val rssUrl = rssSourceTextView.editText!!.text.toString()
+            val rssUrl = rssSourceTextView.editText?.text.toString()
             if (rssUrl.isBlank()){
                 Toast.makeText(context, "RSS url cannot be empty", Toast.LENGTH_SHORT).show()
             } else if (!URLUtil.isValidUrl(rssUrl)){
@@ -55,14 +63,14 @@ class ChangeRssSourceFragment : Fragment() {
                 if (userProfile == null) {
                     userProfile = UserProfile(rssSource = rssUrl)
                 } else {
-                    userProfile!!.rssSource = rssUrl
+                    userProfile?.rssSource = rssUrl
                 }
                 updateProfile(currentUser, userProfile)
                 (activity as MainActivity).cleanArticlesCache()
             }
             saveButton.isEnabled = true
         }
-        FirebaseDatabase.getInstance().reference.child(currentUser!!.uid).addValueEventListener(userProfileListener)
+        FirebaseDatabase.getInstance().reference.child(currentUser?.uid.toString()).addValueEventListener(userProfileListener)
     }
 
     private fun updateProfile(user : FirebaseUser?, userProfile : UserProfile?) {

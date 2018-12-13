@@ -2,7 +2,6 @@ package com.bsuirlabs.softwaredesign
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,33 +18,45 @@ class RegistrationFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_registration, container, false)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("email", email?.editText?.text.toString().trim())
+        outState.putString("password", password?.editText?.text.toString().trim())
+        outState.putString("password_confirmation", password_confirmation?.editText?.text.toString().trim())
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         loginButton.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        if (savedInstanceState != null) {
+            email.editText?.setText(savedInstanceState.getString("email"))
+            password.editText?.setText(savedInstanceState.getString("password"))
+            password_confirmation?.editText?.setText(savedInstanceState.getString("password_confirmation"))
+        }
+
         registerButton.setOnClickListener {
             disableButtons()
             if (email.editText?.text.toString().trim().isNotBlank() &&
+                    password.editText?.text.toString().trim().isNotBlank() &&
                     password.editText?.text.toString().trim() == password_confirmation.editText?.text.toString().trim()){
                 progressBar.visibility = View.VISIBLE
                 FirebaseAuth.getInstance()
                         .createUserWithEmailAndPassword(email.editText?.text.toString().trim(),
                                                         password.editText?.text.toString().trim())
-                        .addOnCompleteListener {
+                        .addOnCompleteListener { auth ->
                             enableButtons()
-                            if (it.isSuccessful){
+                            if (auth.isSuccessful){
                                 (activity as AuthActivity).startMainActivity()
                             } else {
-                                Toast.makeText(context, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, auth.exception.toString(), Toast.LENGTH_SHORT).show()
                             }
                         }
             } else {
                 enableButtons()
-                Log.d("ERROR EMAIL", email.editText?.text.toString().trim())
-                Log.d("ERROR PASSWORD", password.editText?.text.toString().trim())
-                Log.d("ERROR PASSWORD", password_confirmation.editText?.text.toString().trim())
                 Toast.makeText(context, getString(R.string.registration_error), Toast.LENGTH_SHORT).show()
             }
         }

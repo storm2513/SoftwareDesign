@@ -26,7 +26,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val currentUser = FirebaseAuth.getInstance().currentUser
-        profileEmail.text = currentUser!!.email
+        profileEmail.text = currentUser?.email
         progressBar.visibility = View.VISIBLE
         val userProfileListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -35,11 +35,12 @@ class ProfileFragment : Fragment() {
                     profileFirstName?.text = userProfile.firstName
                     profileLastName?.text = userProfile.lastName
                     val fullName = """${userProfile.firstName} ${userProfile.lastName}"""
-                    (activity as MainActivity).getNameTextViewFromNavView().text = fullName
+                    if (activity != null)
+                        (activity as MainActivity).getNameTextViewFromNavView().text = fullName
                     profilePhone?.text = userProfile.phone
-                    if (!userProfile.image.isNullOrBlank()) {
+                    if (!userProfile.image.isBlank()) {
                         val imageReference = FirebaseStorage.getInstance()
-                                .getReference(userProfile.image!!)
+                                .getReference(userProfile.image)
                         if (profileImage != null) {
                             GlideApp.with(this@ProfileFragment)
                                     .load(imageReference)
@@ -53,11 +54,10 @@ class ProfileFragment : Fragment() {
                 progressBar?.visibility = View.INVISIBLE
             }
             override fun onCancelled(databaseError: DatabaseError) {
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                Log.e(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
-        FirebaseDatabase.getInstance().reference.child(currentUser.uid).addValueEventListener(userProfileListener)
-
+        FirebaseDatabase.getInstance().reference.child(currentUser?.uid.toString()).addValueEventListener(userProfileListener)
 
         profileEditButton.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_profileEditFragment)

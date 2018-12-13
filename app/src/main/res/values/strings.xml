@@ -40,4 +40,9 @@
     <string name="capture_photo">Capture photo from camera</string>
     <string name="registration_error">Email should not be blank and passwords must be equal</string>
     <string name="rss">RSS</string>
+    <string name="unsaved_data_message">You have unsaved data! Leave?</string>
+    <string name="no_internet_connection_and_cached_articles">No internet connection and cached articles</string>
+    <string name="change_rss_source">Change RSS source</string>
+    <string name="rss_url">RSS url</string>
+    <string name="card_image">Card image</string>
 </resources>

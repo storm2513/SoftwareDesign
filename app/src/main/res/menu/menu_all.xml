@@ -5,7 +5,7 @@
         android:id="@+id/action_change_rss"
         android:icon="@drawable/ic_rss_feed_white_24dp"
         android:orderInCategory="100"
-        android:title="Change RSS Source"
+        android:title="@string/change_rss_source"
         android:visible="false"
         app:showAsAction="ifRoom" />
     <item

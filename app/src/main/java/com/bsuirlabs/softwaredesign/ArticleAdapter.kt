@@ -16,13 +16,15 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 class ArticleAdapter(private val articleList: ArrayList<Article>, private val listener: (String) -> Unit) : RecyclerView.Adapter<ArticleAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.title.text = articleList[position].title
-        holder.description.text = fromHtml(articleList[position].description)
-        holder.date.text = articleList[position].pubDate.toString()
-        GlideApp.with(holder.image.context)
-                .load(articleList[position].image)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.image)
+        holder.title?.text = articleList[position].title
+        holder.description?.text = fromHtml(articleList[position].description)
+        holder.date?.text = articleList[position].pubDate.toString()
+        if (holder.image != null) {
+            GlideApp.with(holder.image.context)
+                    .load(articleList[position].image)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.image)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -31,7 +33,7 @@ class ArticleAdapter(private val articleList: ArrayList<Article>, private val li
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleAdapter.ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.rss_card, parent, false)
-        return ViewHolder(v).listen{ pos, type ->
+        return ViewHolder(v).listen{ pos, _ ->
             val item = articleList[pos]
             listener(item.link)
         }
@@ -45,10 +47,10 @@ class ArticleAdapter(private val articleList: ArrayList<Article>, private val li
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        val title = itemView.findViewById<TextView>(R.id.cardTitle)!!
-        val date = itemView.findViewById<TextView>(R.id.cardDate)!!
-        val description = itemView.findViewById<TextView>(R.id.cardDescription)!!
-        val image = itemView.findViewById<ImageView>(R.id.cardImage)!!
+        val title: TextView? = itemView.findViewById(R.id.cardTitle)
+        val date: TextView? = itemView.findViewById(R.id.cardDate)
+        val description: TextView? = itemView.findViewById(R.id.cardDescription)
+        val image: ImageView? = itemView.findViewById(R.id.cardImage)
     }
 
     @Suppress("DEPRECATION")

@@ -25,6 +25,7 @@ import java.io.IOException
 
 
 class RssFragment : Fragment() {
+    private val CachedArticlesCount = 10
     private var userProfile : UserProfile? = null
 
     private val onClickListener: (String) -> Unit = { link ->
@@ -47,7 +48,7 @@ class RssFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val spanCount = if (resources.getBoolean(R.bool.isTablet)) 2 else 1
-        recyclerView.layoutManager = GridLayoutManager(context, spanCount)
+        recyclerView.layoutManager = GridLayoutManager(activity, spanCount)
         recyclerView.setHasFixedSize(true)
         if (isOnline()) {
             loadArticles()
@@ -61,10 +62,10 @@ class RssFragment : Fragment() {
     }
 
     private fun setCachedArticles(){
-        val articles = context!!.getSharedPreferences("data", MODE_PRIVATE).getString("articles", null)
+        val articles = activity?.getSharedPreferences("data", MODE_PRIVATE)?.getString("articles", null)
         if (articles.isNullOrBlank()){
             progressBar?.visibility = View.INVISIBLE
-            Toast.makeText(context, "No internet connection and cached articles", Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, getString(R.string.no_internet_connection_and_cached_articles), Toast.LENGTH_LONG).show()
             return
         }
         val array = Gson().fromJson<ArrayList<Article>>(articles, object:TypeToken<ArrayList<Article>>() {}.type)
@@ -78,8 +79,8 @@ class RssFragment : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 userProfile = dataSnapshot.getValue(UserProfile::class.java)
                 if (userProfile != null) {
-                    if (!userProfile!!.rssSource.isNullOrBlank()) {
-                        val url = userProfile!!.rssSource!!
+                    if (!userProfile?.rssSource.isNullOrBlank()) {
+                        val url = userProfile?.rssSource.toString()
                         parseRSSArticles(url)
                     } else {
                         findNavController().navigate(R.id.action_rssFragment_to_changeRssSourceFragment)
@@ -90,7 +91,7 @@ class RssFragment : Fragment() {
                 showError()
             }
         }
-        FirebaseDatabase.getInstance().reference.child(currentUser!!.uid).addValueEventListener(userProfileListener)
+        FirebaseDatabase.getInstance().reference.child(currentUser?.uid.toString()).addValueEventListener(userProfileListener)
     }
 
     private fun isOnline() : Boolean{
@@ -114,12 +115,11 @@ class RssFragment : Fragment() {
             execute(url)
             onFinish(object : Parser.OnTaskCompleted {
                 override fun onTaskCompleted(articles: ArrayList<Article>) {
-                    val cachedArticlesCount = 10
-                    val serializedArticles = Gson().toJson(articles.take(cachedArticlesCount))
-                    context!!.getSharedPreferences("data", MODE_PRIVATE)
-                            .edit()
-                            .putString("articles", serializedArticles)
-                            .apply()
+                    val serializedArticles = Gson().toJson(articles.take(CachedArticlesCount))
+                    activity?.getSharedPreferences("data", MODE_PRIVATE)
+                            ?.edit()
+                            ?.putString("articles", serializedArticles)
+                            ?.apply()
                     recyclerView?.adapter = ArticleAdapter(articles, onClickListener)
                     progressBar?.visibility = View.INVISIBLE
                 }
@@ -132,7 +132,7 @@ class RssFragment : Fragment() {
     }
 
     private fun showError(){
-        Toast.makeText(context, "Error occurred while trying to load RSS feed", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, "Error occurred while trying to load RSS feed", Toast.LENGTH_SHORT).show()
         progressBar?.visibility = View.INVISIBLE
     }
 }
