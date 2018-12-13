@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -43,14 +45,22 @@ class ChangeRssSourceFragment : Fragment() {
             }
         }
         saveButton.setOnClickListener {
+            saveButton.isEnabled = false
             val rssUrl = rssSourceTextView.editText!!.text.toString()
-            if(userProfile == null) {
-                userProfile = UserProfile(rssSource = rssUrl)
+            if (rssUrl.isBlank()){
+                Toast.makeText(context, "RSS url cannot be empty", Toast.LENGTH_SHORT).show()
+            } else if (!URLUtil.isValidUrl(rssUrl)){
+                Toast.makeText(context, "RSS url is invalid", Toast.LENGTH_SHORT).show()
             } else {
-                userProfile!!.rssSource = rssUrl
+                if (userProfile == null) {
+                    userProfile = UserProfile(rssSource = rssUrl)
+                } else {
+                    userProfile!!.rssSource = rssUrl
+                }
+                updateProfile(currentUser, userProfile)
+                (activity as MainActivity).cleanArticlesCache()
             }
-            updateProfile(currentUser, userProfile)
-            (activity as MainActivity).cleanArticlesCache()
+            saveButton.isEnabled = true
         }
         FirebaseDatabase.getInstance().reference.child(currentUser!!.uid).addValueEventListener(userProfileListener)
     }

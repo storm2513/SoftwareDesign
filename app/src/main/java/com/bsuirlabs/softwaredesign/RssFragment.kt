@@ -1,10 +1,8 @@
 package com.bsuirlabs.softwaredesign
 
 
-import android.content.ContentValues
 import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -63,7 +61,7 @@ class RssFragment : Fragment() {
     }
 
     private fun setCachedArticles(){
-        var articles = context!!.getSharedPreferences("data", MODE_PRIVATE).getString("articles", null)
+        val articles = context!!.getSharedPreferences("data", MODE_PRIVATE).getString("articles", null)
         if (articles.isNullOrBlank()){
             progressBar?.visibility = View.INVISIBLE
             Toast.makeText(context, "No internet connection and cached articles", Toast.LENGTH_LONG).show()
@@ -82,32 +80,14 @@ class RssFragment : Fragment() {
                 if (userProfile != null) {
                     if (!userProfile!!.rssSource.isNullOrBlank()) {
                         val url = userProfile!!.rssSource!!
-                        Parser().apply {
-                            execute(url)
-                            onFinish(object: Parser.OnTaskCompleted {
-                                override fun onTaskCompleted(articles: ArrayList<Article>) {
-                                    val cachedArticlesCount = 10
-                                    val serializedArticles = Gson().toJson(articles.take(cachedArticlesCount))
-                                    context!!.getSharedPreferences("data", MODE_PRIVATE)
-                                            .edit()
-                                            .putString("articles", serializedArticles)
-                                            .apply()
-                                    recyclerView?.adapter = ArticleAdapter(articles, onClickListener)
-                                    progressBar?.visibility = View.INVISIBLE
-                                }
-                                override fun onError() {
-                                    Toast.makeText(context,"Error occurred while trying to load RSS feed", Toast.LENGTH_SHORT).show()
-                                }
-                            })
-                        }
+                        parseRSSArticles(url)
                     } else {
                         findNavController().navigate(R.id.action_rssFragment_to_changeRssSourceFragment)
                     }
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {
-                progressBar?.visibility = View.INVISIBLE
-                Log.w(ContentValues.TAG, "loadPost:onCancelled", databaseError.toException())
+                showError()
             }
         }
         FirebaseDatabase.getInstance().reference.child(currentUser!!.uid).addValueEventListener(userProfileListener)
@@ -127,5 +107,32 @@ class RssFragment : Fragment() {
             e.printStackTrace()
         }
         return false
+    }
+
+    private fun parseRSSArticles(url : String){
+        Parser().apply {
+            execute(url)
+            onFinish(object : Parser.OnTaskCompleted {
+                override fun onTaskCompleted(articles: ArrayList<Article>) {
+                    val cachedArticlesCount = 10
+                    val serializedArticles = Gson().toJson(articles.take(cachedArticlesCount))
+                    context!!.getSharedPreferences("data", MODE_PRIVATE)
+                            .edit()
+                            .putString("articles", serializedArticles)
+                            .apply()
+                    recyclerView?.adapter = ArticleAdapter(articles, onClickListener)
+                    progressBar?.visibility = View.INVISIBLE
+                }
+
+                override fun onError() {
+                    showError()
+                }
+            })
+        }
+    }
+
+    private fun showError(){
+        Toast.makeText(context, "Error occurred while trying to load RSS feed", Toast.LENGTH_SHORT).show()
+        progressBar?.visibility = View.INVISIBLE
     }
 }
