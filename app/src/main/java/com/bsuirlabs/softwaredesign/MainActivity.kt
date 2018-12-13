@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.NavController
@@ -60,6 +61,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
         nav_view.setCheckedItem(R.id.nav_home)
         setProfileEmail(currentUser.email.toString())
+        setNavHeaderOnClickListener()
 
         val userProfileListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -130,14 +132,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_home -> {
                 navController.navigate(R.id.mainFragment)
             }
-            R.id.nav_profile -> {
-                navController.navigate(R.id.profileFragment)
-            }
             R.id.nav_rss -> {
                 navController.navigate(R.id.rssFragment)
             }
         }
 
+        item.isChecked = true
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
@@ -161,6 +161,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     fun getProfileImageViewFromNavView() : ImageView {
         val headerView = nav_view.getHeaderView(0)
         return headerView.findViewById(R.id.nav_header_profile_icon) as ImageView
+    }
+
+    private fun setNavHeaderOnClickListener(){
+        val headerView = nav_view.getHeaderView(0)
+        headerView.findViewById<LinearLayout>(R.id.nav_header_layout).setOnClickListener {
+            navController.navigate(R.id.profileFragment)
+            drawer_layout.closeDrawer(GravityCompat.START)
+            val navMenuSize = nav_view.menu.size()
+            for (i in 0 until navMenuSize) {
+                nav_view.menu.getItem(i).isChecked = false
+            }
+        }
     }
 
     private fun openFragmentFromIntentPath() {
